@@ -21,7 +21,7 @@ function initTelegramAuth() {
             };
             
             // Проверяем админские права (здесь можно добавить список админов)
-            const adminIds = [123456789, 987654321]; // ID админов
+            const adminIds = [1499853097]; // ID админов
             isAdmin = adminIds.includes(user.id);
             
             // Сохраняем в localStorage
