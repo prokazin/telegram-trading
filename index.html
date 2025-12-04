@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трейдинг Симулятор</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка с балансом -->
+        <header class="header">
+            <div class="balance-section">
+                <h1>💰 Трейдинг Симулятор</h1>
+                <div class="balance-info">
+                    <div class="balance">
+                        <span>Баланс:</span>
+                        <span id="balance">$1000.00</span>
+                    </div>
+                    <div class="pnl">
+                        <span>P&L:</span>
+                        <span id="pnl" class="neutral">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- График -->
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <!-- Выбор монеты -->
+        <div class="coin-selector">
+            <h3>Выберите монету:</h3>
+            <div class="coin-buttons">
+                <button class="coin-btn active" data-coin="BTC">BTC</button>
+                <button class="coin-btn" data-coin="ETH">ETH</button>
+                <button class="coin-btn" data-coin="DOGE">DOGE</button>
+            </div>
+            <div class="current-price">
+                Текущая цена: <span id="currentPrice">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Торговый интерфейс -->
+        <div class="trade-section">
+            <div class="leverage-selector">
+                <h3>Плечо:</h3>
+                <div class="leverage-buttons">
+                    <button class="lev-btn" data-leverage="1">1x</button>
+                    <button class="lev-btn active" data-leverage="2">2x</button>
+                    <button class="lev-btn" data-leverage="5">5x</button>
+                    <button class="lev-btn" data-leverage="10">10x</button>
+                </div>
+            </div>
+
+            <div class="trade-type">
+                <button id="longBtn" class="trade-btn buy">ЛОНГ</button>
+                <button id="shortBtn" class="trade-btn sell">ШОРТ</button>
+            </div>
+
+            <div class="amount-input">
+                <input type="number" id="amount" placeholder="Сумма ($)" min="1" step="1">
+                <button id="maxBtn" class="small-btn">MAX</button>
+            </div>
+
+            <div class="stop-controls">
+                <h4>Стоп-лосс / Тейк-профит:</h4>
+                <div class="stop-inputs">
+                    <input type="number" id="stopLoss" placeholder="Стоп-лосс (%)" min="0" step="0.1">
+                    <input type="number" id="takeProfit" placeholder="Тейк-профит (%)" min="0" step="0.1">
+                </div>
+            </div>
+
+            <button id="executeTrade" class="execute-btn">Открыть сделку</button>
+        </div>
+
+        <!-- Активные сделки -->
+        <div class="active-trades">
+            <h3>Активные сделки</h3>
+            <div id="tradesList" class="trades-list">
+                <!-- Сделки будут добавляться здесь -->
+            </div>
+        </div>
+
+        <!-- История и рейтинг -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="history">История</button>
+            <button class="tab-btn" data-tab="rating">Рейтинг</button>
+        </div>
+
+        <div class="tab-content active" id="historyTab">
+            <div id="historyList" class="history-list">
+                <!-- История сделок -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="ratingTab">
+            <div id="ratingList" class="rating-list">
+                <!-- Рейтинг игроков -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно ликвидации -->
+    <div id="liquidationModal" class="modal">
+        <div class="modal-content">
+            <h2>⚠️ ЛИКВИДАЦИЯ!</h2>
+            <p id="liquidationMessage">Ваша позиция была ликвидирована!</p>
+            <button id="closeModal" class="modal-btn">Продолжить</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
