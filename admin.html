@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Шапка админки -->
+        <header class="admin-header">
+            <h1>⚙️ Админ-панель</h1>
+            <div class="admin-user">
+                <span id="adminName">Администратор</span>
+                <button class="logout-btn" onclick="logout()">Выйти</button>
+            </div>
+        </header>
+        
+        <!-- Табы админки -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users">👥 Пользователи</button>
+            <button class="admin-tab" data-tab="payments">💰 Платежи</button>
+            <button class="admin-tab" data-tab="stats">📊 Статистика</button>
+            <button class="admin-tab" data-tab="settings">⚙️ Настройки</button>
+        </div>
+        
+        <!-- Контент вкладок -->
+        <div class="admin-content">
+            
+            <!-- Вкладка пользователей -->
+            <div id="usersTab" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Управление пользователями</h2>
+                    <div class="search-box">
+                        <input type="text" id="userSearch" placeholder="Поиск по ID или имени...">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                </div>
+                
+                <div class="users-list" id="usersList">
+                    <!-- Список пользователей -->
+                    <div class="loading">Загрузка пользователей...</div>
+                </div>
+                
+                <div class="user-actions">
+                    <button class="action-btn" onclick="addTestUser()">
+                        + Добавить тестового пользователя
+                    </button>
+                    <button class="action-btn danger" onclick="clearAllUsers()">
+                        🗑️ Очистить всех пользователей
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Вкладка платежей -->
+            <div id="paymentsTab" class="tab-content">
+                <div class="tab-header">
+                    <h2>История платежей</h2>
+                    <div class="filters">
+                        <select id="paymentFilter">
+                            <option value="all">Все платежи</option>
+                            <option value="today">Сегодня</option>
+                            <option value="week">За неделю</option>
+                            <option value="month">За месяц</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="payments-list" id="paymentsList">
+                    <!-- Список платежей -->
+                    <div class="loading">Загрузка платежей...</div>
+                </div>
+                
+                <div class="payment-stats">
+                    <div class="stat-card">
+                        <div class="stat-title">Всего пополнений</div>
+                        <div class="stat-value" id="totalPayments">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Общая сумма</div>
+                        <div class="stat-value" id="totalAmount">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Средний чек</div>
+                        <div class="stat-value" id="avgPayment">$0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка статистики -->
+            <div id="statsTab" class="tab-content">
+                <div class="tab-header">
+                    <h2>Статистика платформы</h2>
+                    <div class="date-range">
+                        <input type="date" id="startDate">
+                        <span>до</span>
+                        <input type="date" id="endDate">
+                        <button class="apply-btn" onclick="updateStats()">Применить</button>
+                    </div>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card big">
+                        <div class="stat-title">Всего пользователей</div>
+                        <div class="stat-value big" id="totalUsers">0</div>
+                    </div>
+                    
+                    <div class="stat-card big">
+                        <div class="stat-title">Активных трейдеров</div>
+                        <div class="stat-value big" id="activeTraders">0</div>
+                    </div>
+                    
+                    <div class="stat-card big">
+                        <div class="stat-title">Общий баланс</div>
+                        <div class="stat-value big" id="totalBalance">$0</div>
+                    </div>
+                    
+                    <div class="stat-card big">
+                        <div class="stat-title">Общий P&L</div>
+                        <div class="stat-value big" id="totalPnl">$0</div>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h3>Регистрация пользователей</h3>
+                        <canvas id="registrationsChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <h3>Пополнения баланса</h3>
+                        <canvas id="depositsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка настроек -->
+            <div id="settingsTab" class="tab-content">
+                <div class="tab-header">
+                    <h2>Настройки системы</h2>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="setting-group">
+                        <label>Начальный баланс ($)</label>
+                        <input type="number" id="startBalance" value="1000" min="0">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>Максимальное плечо</label>
+                        <select id="maxLeverage">
+                            <option value="10">10x</option>
+                            <option value="20">20x</option>
+                            <option value="50">50x</option>
+                            <option value="100">100x</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>Комиссия на вывод (%)</label>
+                        <input type="number" id="withdrawFee" value="5" min="0" max="50" step="0.1">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>Курс Stars ($ за 1 Star)</label>
+                        <input type="number" id="starsRate" value="0.01" min="0.001" step="0.001">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>Бонус за первую покупку (%)</label>
+                        <input type="number" id="firstBonus" value="10" min="0" max="100">
+                    </div>
+                    
+                    <div class="setting-actions">
+                        <button class="save-btn" onclick="saveSettings()">💾 Сохранить настройки</button>
+                        <button class="reset-btn" onclick="resetSettings()">🔄 Сбросить</button>
+                    </div>
+                </div>
+                
+                <div class="danger-zone">
+                    <h3>Опасная зона</h3>
+                    <div class="danger-actions">
+                        <button class="danger-btn" onclick="resetAllData()">
+                            🗑️ Сбросить все данные
+                        </button>
+                        <button class="danger-btn" onclick="exportData()">
+                            📤 Экспорт данных
+                        </button>
+                        <button class="danger-btn" onclick="importData()">
+                            📥 Импорт данных
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Модальное окно управления пользователем -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h2>Управление пользователем</h2>
+            <div class="user-modal-info">
+                <div class="info-row">
+                    <span>ID:</span>
+                    <span id="modalUserId">-</span>
+                </div>
+                <div class="info-row">
+                    <span>Имя:</span>
+                    <span id="modalUserName">-</span>
+                </div>
+                <div class="info-row">
+                    <span>Баланс:</span>
+                    <span id="modalUserBalance">$0</span>
+                </div>
+                <div class="info-row">
+                    <span>Stars:</span>
+                    <span id="modalUserStars">0 ⭐</span>
+                </div>
+            </div>
+            
+            <div class="user-edit-form">
+                <div class="form-group">
+                    <label>Изменить баланс ($)</label>
+                    <input type="number" id="editBalance" min="0" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label>Добавить Stars</label>
+                    <input type="number" id="editStars" min="0" step="1">
+                </div>
+                
+                <div class="form-group">
+                    <label>Установить статус</label>
+                    <select id="editStatus">
+                        <option value="active">Активный</option>
+                        <option value="banned">Забанен</option>
+                        <option value="premium">Премиум</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeUserModal()">Отмена</button>
+                <button class="modal-btn save-btn" onclick="saveUserChanges()">Сохранить</button>
+                <button class="modal-btn danger-btn" onclick="deleteUser()">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
