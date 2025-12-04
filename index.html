@@ -3,117 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Трейдинг Симулятор</title>
+    <title>Трейдинг</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Шапка с балансом -->
-        <header class="header">
-            <div class="balance-section">
-                <h1>💰 Трейдинг Симулятор</h1>
-                <div class="balance-info">
-                    <div class="balance">
-                        <span>Баланс:</span>
-                        <span id="balance">$1000.00</span>
-                    </div>
-                    <div class="pnl">
+    <!-- Верхняя панель с балансом -->
+    <div class="top-bar">
+        <div class="user-info">
+            <span id="userName">Гость</span>
+            <div class="balance-display">
+                <span class="balance-label">Баланс:</span>
+                <span id="balanceAmount" class="balance-amount">$1,000.00</span>
+            </div>
+        </div>
+        <button class="buy-stars-btn" onclick="openBuyMenu()">
+            ⭐ Купить $
+        </button>
+    </div>
+
+    <!-- Swiper для вертикального листания -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            
+            <!-- СЛАЙД 1: Трейдинг -->
+            <div class="swiper-slide trading-slide">
+                <div class="slide-header">
+                    <h2>💰 Трейдинг</h2>
+                    <div class="pnl-display">
                         <span>P&L:</span>
-                        <span id="pnl" class="neutral">$0.00</span>
+                        <span id="pnlAmount" class="pnl-amount">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- График -->
+                <div class="chart-container">
+                    <canvas id="priceChart"></canvas>
+                </div>
+
+                <!-- Выбор монеты -->
+                <div class="coin-selector">
+                    <div class="coin-buttons">
+                        <button class="coin-btn active" data-coin="BTC">BTC</button>
+                        <button class="coin-btn" data-coin="ETH">ETH</button>
+                        <button class="coin-btn" data-coin="DOGE">DOGE</button>
+                    </div>
+                    <div class="price-info">
+                        <span id="currentCoin">BTC</span>
+                        <span id="currentPrice">$50,000.00</span>
+                        <span id="priceChange" class="positive">+2.5%</span>
+                    </div>
+                </div>
+
+                <!-- Торговые кнопки -->
+                <div class="trade-controls">
+                    <div class="leverage-selector">
+                        <span>Плечо:</span>
+                        <select id="leverageSelect">
+                            <option value="2">2x</option>
+                            <option value="5">5x</option>
+                            <option value="10">10x</option>
+                        </select>
+                    </div>
+                    
+                    <div class="trade-buttons">
+                        <button class="trade-btn buy-btn" onclick="openTrade('LONG')">
+                            <span class="btn-icon">📈</span>
+                            <span class="btn-text">ЛОНГ</span>
+                        </button>
+                        <button class="trade-btn sell-btn" onclick="openTrade('SHORT')">
+                            <span class="btn-icon">📉</span>
+                            <span class="btn-text">ШОРТ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Активные сделки -->
+                <div class="active-trades-section">
+                    <h3>Активные сделки</h3>
+                    <div id="activeTradesList" class="trades-list">
+                        <!-- Сделки будут здесь -->
                     </div>
                 </div>
             </div>
-        </header>
 
-        <!-- График -->
-        <div class="chart-container">
-            <canvas id="priceChart"></canvas>
-        </div>
-
-        <!-- Выбор монеты -->
-        <div class="coin-selector">
-            <h3>Выберите монету:</h3>
-            <div class="coin-buttons">
-                <button class="coin-btn active" data-coin="BTC">BTC</button>
-                <button class="coin-btn" data-coin="ETH">ETH</button>
-                <button class="coin-btn" data-coin="DOGE">DOGE</button>
-            </div>
-            <div class="current-price">
-                Текущая цена: <span id="currentPrice">$0.00</span>
-            </div>
-        </div>
-
-        <!-- Торговый интерфейс -->
-        <div class="trade-section">
-            <div class="leverage-selector">
-                <h3>Плечо:</h3>
-                <div class="leverage-buttons">
-                    <button class="lev-btn" data-leverage="1">1x</button>
-                    <button class="lev-btn active" data-leverage="2">2x</button>
-                    <button class="lev-btn" data-leverage="5">5x</button>
-                    <button class="lev-btn" data-leverage="10">10x</button>
+            <!-- СЛАЙД 2: Рейтинг -->
+            <div class="swiper-slide ranking-slide">
+                <div class="slide-header">
+                    <h2>🏆 Рейтинг игроков</h2>
+                    <button class="refresh-btn" onclick="loadRanking()">🔄</button>
+                </div>
+                
+                <div class="ranking-list" id="rankingList">
+                    <!-- Рейтинг будет здесь -->
+                    <div class="loading">Загрузка рейтинга...</div>
                 </div>
             </div>
 
-            <div class="trade-type">
-                <button id="longBtn" class="trade-btn buy">ЛОНГ</button>
-                <button id="shortBtn" class="trade-btn sell">ШОРТ</button>
-            </div>
-
-            <div class="amount-input">
-                <input type="number" id="amount" placeholder="Сумма ($)" min="1" step="1">
-                <button id="maxBtn" class="small-btn">MAX</button>
-            </div>
-
-            <div class="stop-controls">
-                <h4>Стоп-лосс / Тейк-профит:</h4>
-                <div class="stop-inputs">
-                    <input type="number" id="stopLoss" placeholder="Стоп-лосс (%)" min="0" step="0.1">
-                    <input type="number" id="takeProfit" placeholder="Тейк-профит (%)" min="0" step="0.1">
+            <!-- СЛАЙД 3: История -->
+            <div class="swiper-slide history-slide">
+                <div class="slide-header">
+                    <h2>📊 История сделок</h2>
+                    <div class="stats-summary">
+                        <span>Всего: <span id="totalTrades">0</span></span>
+                        <span>Профит: <span id="totalProfit" class="positive">$0</span></span>
+                    </div>
+                </div>
+                
+                <div class="history-list" id="historyList">
+                    <!-- История будет здесь -->
+                    <div class="empty-history">Нет сделок</div>
                 </div>
             </div>
 
-            <button id="executeTrade" class="execute-btn">Открыть сделку</button>
-        </div>
-
-        <!-- Активные сделки -->
-        <div class="active-trades">
-            <h3>Активные сделки</h3>
-            <div id="tradesList" class="trades-list">
-                <!-- Сделки будут добавляться здесь -->
+            <!-- СЛАЙД 4: Магазин -->
+            <div class="swiper-slide shop-slide">
+                <div class="slide-header">
+                    <h2>🛒 Магазин</h2>
+                    <div class="stars-balance">
+                        <span>Ваши Stars:</span>
+                        <span id="userStars">0 ⭐</span>
+                    </div>
+                </div>
+                
+                <div class="shop-items">
+                    <h3>Купить доллары за Telegram Stars</h3>
+                    
+                    <div class="stars-packages">
+                        <div class="package" onclick="buyPackage(100, 10)">
+                            <div class="package-header">
+                                <span class="stars-count">100 ⭐</span>
+                                <span class="package-price">$10</span>
+                            </div>
+                            <div class="package-bonus">+1% бонус</div>
+                            <button class="buy-package-btn">Купить</button>
+                        </div>
+                        
+                        <div class="package" onclick="buyPackage(500, 55)">
+                            <div class="package-header">
+                                <span class="stars-count">500 ⭐</span>
+                                <span class="package-price">$55</span>
+                            </div>
+                            <div class="package-bonus">+10% бонус</div>
+                            <button class="buy-package-btn">Купить</button>
+                        </div>
+                        
+                        <div class="package" onclick="buyPackage(1000, 120)">
+                            <div class="package-header">
+                                <span class="stars-count">1000 ⭐</span>
+                                <span class="package-price">$120</span>
+                            </div>
+                            <div class="package-bonus">+20% бонус</div>
+                            <button class="buy-package-btn">Купить</button>
+                        </div>
+                    </div>
+                    
+                    <div class="stars-info">
+                        <p>⭐ 1 Telegram Star ≈ $0.01</p>
+                        <p>💰 Деньги сразу на торговый баланс</p>
+                        <p>⚡ Мгновенное пополнение</p>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- История и рейтинг -->
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="history">История</button>
-            <button class="tab-btn" data-tab="rating">Рейтинг</button>
         </div>
-
-        <div class="tab-content active" id="historyTab">
-            <div id="historyList" class="history-list">
-                <!-- История сделок -->
-            </div>
-        </div>
-
-        <div class="tab-content" id="ratingTab">
-            <div id="ratingList" class="rating-list">
-                <!-- Рейтинг игроков -->
-            </div>
-        </div>
+        
+        <!-- Пагинация (точки) -->
+        <div class="swiper-pagination"></div>
     </div>
 
-    <!-- Модальное окно ликвидации -->
-    <div id="liquidationModal" class="modal">
+    <!-- Модальное окно торговли -->
+    <div id="tradeModal" class="modal">
         <div class="modal-content">
-            <h2>⚠️ ЛИКВИДАЦИЯ!</h2>
-            <p id="liquidationMessage">Ваша позиция была ликвидирована!</p>
-            <button id="closeModal" class="modal-btn">Продолжить</button>
+            <h2>Открытие сделки</h2>
+            <div class="trade-details">
+                <div class="detail-row">
+                    <span>Монета:</span>
+                    <span id="modalCoin">BTC</span>
+                </div>
+                <div class="detail-row">
+                    <span>Направление:</span>
+                    <span id="modalDirection" class="buy-text">LONG</span>
+                </div>
+                <div class="detail-row">
+                    <span>Плечо:</span>
+                    <span id="modalLeverage">2x</span>
+                </div>
+                <div class="detail-row">
+                    <span>Цена входа:</span>
+                    <span id="modalPrice">$50,000</span>
+                </div>
+            </div>
+            
+            <div class="amount-input">
+                <label>Сумма ($):</label>
+                <input type="number" id="tradeAmount" min="1" max="10000" value="100">
+                <div class="amount-slider">
+                    <input type="range" id="amountSlider" min="1" max="10000" value="100">
+                </div>
+            </div>
+            
+            <div class="stop-inputs">
+                <div class="stop-input">
+                    <label>Стоп-лосс (%)</label>
+                    <input type="number" id="stopLoss" min="0" max="100" step="0.1" placeholder="0">
+                </div>
+                <div class="stop-input">
+                    <label>Тейк-профит (%)</label>
+                    <input type="number" id="takeProfit" min="0" max="1000" step="0.1" placeholder="0">
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeTradeModal()">Отмена</button>
+                <button class="modal-btn confirm-btn" onclick="executeTrade()">Подтвердить</button>
+            </div>
         </div>
     </div>
 
+    <!-- Меню покупки Stars -->
+    <div id="buyMenu" class="modal">
+        <div class="modal-content">
+            <h2>⭐ Покупка долларов</h2>
+            <p class="modal-description">Пополните торговый баланс через Telegram Stars</p>
+            
+            <div class="stars-packages-modal">
+                <div class="package-modal" onclick="selectPackage(100, 10)">
+                    <div class="stars-icon">100 ⭐</div>
+                    <div class="package-info">
+                        <div class="package-amount">$10</div>
+                        <div class="package-bonus-small">+ $1 бонус</div>
+                    </div>
+                </div>
+                
+                <div class="package-modal" onclick="selectPackage(500, 55)">
+                    <div class="stars-icon">500 ⭐</div>
+                    <div class="package-info">
+                        <div class="package-amount">$55</div>
+                        <div class="package-bonus-small">+ $5.5 бонус</div>
+                    </div>
+                </div>
+                
+                <div class="package-modal" onclick="selectPackage(1000, 120)">
+                    <div class="stars-icon">1000 ⭐</div>
+                    <div class="package-info">
+                        <div class="package-amount">$120</div>
+                        <div class="package-bonus-small">+ $24 бонус</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="selected-package" id="selectedPackage">
+                <span>Выбрано: </span>
+                <span id="selectedAmount">0 ⭐ = $0</span>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeBuyMenu()">Отмена</button>
+                <button class="modal-btn confirm-btn" onclick="processStarsPayment()">
+                    Купить за <span id="starsCount">0</span> ⭐
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Админ кнопка (только для админов) -->
+    <div id="adminButton" class="admin-button">
+        <a href="admin.html">⚙️ Админ</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script src="payment.js"></script>
 </body>
 </html>
