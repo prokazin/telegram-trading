@@ -1,0 +1,22 @@
+{
+    "coins": [
+        {
+            "symbol": "BTC",
+            "name": "Bitcoin",
+            "description": "Первая криптовалюта",
+            "volatility": 0.02
+        },
+        {
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "description": "Платформа для умных контрактов",
+            "volatility": 0.03
+        },
+        {
+            "symbol": "DOGE",
+            "name": "Dogecoin",
+            "description": "Мем-криптовалюта",
+            "volatility": 0.05
+        }
+    ]
+}
