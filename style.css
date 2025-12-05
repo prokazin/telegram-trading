@@ -1,3 +1,394 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+/* Шапка */
+.header {
+    margin-bottom: 20px;
+}
+
+.balance-section h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.balance-info {
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.balance, .pnl {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.balance span:first-child,
+.pnl span:first-child {
+    font-size: 14px;
+    color: #666;
+}
+
+#balance {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+#pnl {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.neutral { color: #666; }
+.positive { color: #28a745; }
+.negative { color: #dc3545; }
+
+/* График */
+.chart-container {
+    height: 250px;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+/* Выбор монеты */
+.coin-selector {
+    margin-bottom: 20px;
+}
+
+.coin-selector h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.coin-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.coin-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    background: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.coin-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.current-price {
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Торговый интерфейс */
+.trade-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.leverage-selector h3 {
+    margin-bottom: 10px;
+}
+
+.leverage-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.lev-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.lev-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.trade-type {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.trade-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.trade-btn.buy {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.trade-btn.sell {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
+    color: white;
+}
+
+.amount-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.amount-input input {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.small-btn {
+    padding: 0 20px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.stop-controls {
+    margin-bottom: 20px;
+}
+
+.stop-controls h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.stop-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.stop-inputs input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+}
+
+.execute-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.execute-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Активные сделки */
+.active-trades {
+    margin-bottom: 20px;
+}
+
+.active-trades h3 {
+    margin-bottom: 10px;
+}
+
+.trades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trade-item {
+    background: white;
+    border-left: 4px solid;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.trade-item.long { border-color: #28a745; }
+.trade-item.short { border-color: #dc3545; }
+
+.trade-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.trade-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.close-btn {
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Табы */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background: #e9ecef;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.history-list, .rating-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-item, .rating-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal h2 {
+    color: #dc3545;
+    margin-bottom: 20px;
+}
+
+.modal-btn {
+    padding: 15px 40px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .balance-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .trade-type {
+        flex-direction: column;
+    }
+}
+
 /* ===== Свайпер и табы ===== */
 .swiper-container {
     width: 100%;
